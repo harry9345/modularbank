@@ -1,0 +1,112 @@
+.Contact {
+  max-width: 1200px;
+  width: 100%;
+}
+.Columns {
+  display: flex;
+  margin: 3%;
+  margin-top: -0.5%;
+  margin-left: 13%;
+}
+.Column {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.IsFlex {
+  font-size: 24px;
+  margin: -2rem;
+  margin-top: 8rem;
+  display: grid;
+}
+
+.ThreeFifth {
+  flex: none;
+  width: 87%;
+}
+@media (max-width: 768px) {
+  .Columns {
+    display: block;
+    width: 100%;
+    margin-left: 1%;
+  }
+  .IsFlex {
+    display: block;
+    margin: 1rem;
+    margin-top: -18rem;
+  }
+}
+.IsFlex div {
+  margin-top: 2%;
+}
+.Control {
+  position: relative;
+  margin-top: 0.5em;
+}
+h1 {
+  font-size: 45px;
+  font-weight: 600;
+}
+.Label {
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 0.5em;
+}
+
+.Input {
+  max-width: 100%;
+  width: 91%;
+  height: 27px;
+  font-size: 16px;
+}
+.DropDown {
+  max-width: 100%;
+  width: 91%;
+  height: 33px;
+  font-size: 16px;
+  color: #333333;
+  background-color: white !important;
+}
+a {
+  color: #de3c4b;
+  text-decoration: none;
+  align-self: flex-start;
+}
+.Textarea {
+  display: block;
+  max-width: 100%;
+  min-width: 95%;
+  padding: 50px 7px;
+  resize: vertical;
+}
+.Checkbox {
+  display: flex;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1.25;
+  position: relative;
+}
+.Checkbox input {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 12px;
+  -ms-flex: 0 0 24px;
+  flex: 0 0 24px;
+}
+.Checkbox label {
+  font-size: 16px;
+  opacity: 0.8;
+}
+.Button {
+  margin-left: auto;
+  margin-right: 5%;
+  display: flex;
+  background-color: #de3c4b;
+  border-color: transparent;
+  color: #fff;
+  font-size: 1rem;
+  padding: 20px 30px;
+  height: auto;
+}
