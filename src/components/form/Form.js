@@ -3,15 +3,22 @@ import { useForm } from "react-hook-form";
 import ReactFlagsSelect from "react-flags-select";
 import axios from "axios";
 
+import Modal from "../UI/Modal";
+import Select from "../UI/Select";
+import Input from "../UI/Input";
 import Classes from "../../container//Contact.module.css";
 
 export default function App() {
   const { register, handleSubmit, errors, reset } = useForm({
     mode: "onBlur",
   });
-  const [selected, setSelected] = useState({ country: "" });
+  // success manage state
   const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
 
+  // country State hooks
+  const [selected, setSelected] = useState({ country: "" });
+
+  // Sending contact information to "backend"
   const onSubmit = (data) => {
     axios
       .post(
@@ -26,10 +33,13 @@ export default function App() {
         console.log(error);
       });
   };
+
+  // Modal handler to reset the form and back to main page
   const backToContactUs = () => {
     setIsSuccessfullySubmitted(false);
     reset();
   };
+
   return (
     <div className={`${Classes.Columns} ${Classes.ThreeFifth}`}>
       <form onSubmit={handleSubmit(onSubmit)} method="POST">
@@ -42,10 +52,9 @@ export default function App() {
               First Name*
             </label>
             <div className={Classes.Control}>
-              <input
-                className={Classes.Input}
+              <Input
                 name="fisrtName"
-                ref={register({ required: true })}
+                reference={register({ required: true })}
               />
               {errors.fisrtName && (
                 <span className={Classes.Error}>
@@ -59,7 +68,7 @@ export default function App() {
               Last Name
             </label>
             <div className={Classes.Control}>
-              <input className={Classes.Input} name="lastName" ref={register} />
+              <Input name="lastName" reference={register} />
             </div>
           </div>
         </div>
@@ -70,10 +79,9 @@ export default function App() {
               Email*
             </label>
             <div className={Classes.Control}>
-              <input
-                className={Classes.Input}
+              <Input
                 name="email"
-                ref={register({
+                reference={register({
                   required: "Email is Requeird",
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
@@ -91,22 +99,21 @@ export default function App() {
               Job title
             </label>
             <div className={Classes.Control}>
-              <input className={Classes.Input} name="jobTitle" ref={register} />
+              <Input name="jobTitle" reference={register} />
             </div>
           </div>
         </div>
+
         <br />
+
         <div className={Classes.Columns}>
           <div className={Classes.Column}>
             <label className={Classes.Label} htmlFor="companey">
               Companey*
             </label>
             <div className={Classes.Control}>
-              <input
-                className={Classes.Input}
-                name="companey"
-                ref={register({ required: true })}
-              />
+              <Input name="companey" reference={register({ required: true })} />
+
               {errors.companey && (
                 <span className={Classes.Error}>
                   Please Insert Your Companey Name
@@ -119,21 +126,7 @@ export default function App() {
               Industry
             </label>
             <div className={Classes.Control}>
-              <select
-                name="industry"
-                className={Classes.DropDown}
-                ref={register}
-              >
-                <option value="banking">Banking</option>
-                <option value="automative">Automative</option>
-                <option value="consulting">Consultin</option>
-                <option value="finance">Finance</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="meida/pr">Media/PR</option>
-                <option value="retail">Retail</option>
-                <option value="technology">Technology</option>
-                <option value="telecomunication">Telecomunication</option>
-              </select>
+              <Select name="industry" reference={register} />
             </div>
           </div>
         </div>
@@ -156,21 +149,13 @@ export default function App() {
               Operation Geography
             </label>
             <div className={Classes.Control}>
-              <select
-                name="operationGeo"
-                className={Classes.DropDown}
-                ref={register}
-              >
-                <option value="n/a">N/A</option>
-                <option value="national">National</option>
-                <option value="regional">Regional</option>
-                <option value="global">Global</option>
-              </select>
+              <Select name="operationGeo" reference={register} />
             </div>
           </div>
         </div>
 
         <br />
+
         <div className={Classes.Columns}>
           <div className={Classes.Column}>
             <label className={Classes.Label} htmlFor="message">
@@ -221,15 +206,8 @@ export default function App() {
             </button>
           </div>
         </div>
-        {isSuccessfullySubmitted && (
-          <div
-            id="success"
-            className={Classes.Success}
-            onClick={backToContactUs}
-          >
-            <span>Thank you for your intrest, We will contact you shortly</span>
-          </div>
-        )}
+        {/* Success mesage Modal */}
+        {isSuccessfullySubmitted && <Modal clicked={backToContactUs} />}
       </form>
     </div>
   );

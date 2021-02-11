@@ -6,6 +6,7 @@ const Info = () => {
   return (
     <div className={Classes.Column}>
       <div className={Classes.Column}></div>
+
       <div className={Classes.IsFlex}>
         <div>Media enquiries:</div>
         <a href="mailto:press@modularbank.co">press@modularbank.co</a>
