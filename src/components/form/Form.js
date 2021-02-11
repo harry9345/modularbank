@@ -1,109 +1,38 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import ReactFlagsSelect from "react-flags-select";
 import axios from "axios";
 
-import ReactFlagsSelect from "react-flags-select";
-import Textinput from "../UI/TextInput";
 import Classes from "../../container//Contact.module.css";
 
-const Form = () => {
-  const [firstNameState, setFirstName] = useState({ firstName: "" });
-  const [lastNameState, setLastName] = useState({ lastName: "" });
-  const [emailState, setEmail] = useState({ email: "" });
-  const [jobTitleState, setJobTitle] = useState({ jobTitle: "" });
-  const [companeyState, setCompaney] = useState({ companey: "" });
+export default function App() {
+  const { register, handleSubmit, errors, reset } = useForm({
+    mode: "onBlur",
+  });
   const [selected, setSelected] = useState({ country: "" });
-  const [industryState, setIndustry] = useState({ industry: "" });
-  const [operationGeoState, setOperationGeo] = useState({ operationGeo: "" });
-  const [messageState, setMessage] = useState({ message: "" });
-  const [statusState, setStatus] = useState({ status: "Send" });
-  const [agree, setAgree] = useState(false);
-  const costumerData = {
-    firstNameState,
-    lastNameState,
-    emailState,
-    jobTitleState,
-    companeyState,
-    selected,
-    industryState,
-    operationGeoState,
-    messageState,
-    agree,
-  };
-  // const checkboxHandler = (event) => {
-  //   setAgree(!agree);
-  //   console.log("agree : " + event.target.id);
-  // };
-  const handleChange = (event) => {
-    const field = event.target.id;
-    if (field === "firstName") {
-      setFirstName({ firstName: event.target.value });
-    } else if (field === "email") {
-      setEmail({ email: event.target.value });
-    } else if (field === "lastName") {
-      setLastName({ lastName: event.target.value });
-    } else if (field === "jobTitle") {
-      setJobTitle({ jobTitle: event.target.value });
-    } else if (field === "companey") {
-      setCompaney({ companey: event.target.value });
-    } else if (field === "country") {
-      setSelected({ country: event.target.value });
-    } else if (field === "industry") {
-      setIndustry({ industry: event.target.value });
-    } else if (field === "operationGeo") {
-      setOperationGeo({ operationGeo: event.target.value });
-    } else if (field === "message") {
-      setMessage({ message: event.target.value });
-    } else if (field === "agree") {
-      setAgree(!agree);
-      console.log(agree);
-    }
-  };
+  const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
 
-  const onSubmitHandler = (event) => {
-    event.preventDefault();
-    setStatus({ status: "Sending" });
+  const onSubmit = (data) => {
     axios
       .post(
         "https://vue-http-start-c3be4.firebaseio.com/costumerData.json",
-        costumerData
+        data
       )
-      .then((response) => {
-        console.log(response);
-
-        if (response.statusText === "OK") {
-          alert("Message Sent");
-          setFirstName({ firstName: "" });
-          setLastName({ lastName: "" });
-          setEmail({ email: "" });
-          setJobTitle({ jobTitle: "" });
-          setCompaney({ companey: "" });
-          setSelected({ country: "" });
-          setIndustry({ industry: "" });
-          setOperationGeo({ operationGeo: "" });
-          setMessage({ message: "" });
-          setStatus({ status: "Submited" });
-        } else if (response.statusText === "FAILD") {
-          alert("Message Failed");
-          setStatus({ status: "failed" });
-        }
+      .then((result) => {
+        console.log(result);
+        setIsSuccessfullySubmitted(true);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
-
-  const canBeSubmitted = () => {
-    return (
-      // costumerData.firstNameState !== "" &&
-      // costumerData.emailState !== "" &&
-      // costumerData.companeyState > 0 &&
-      costumerData.selected.length > 0 && costumerData.agree === true
-    );
+  const backToContactUs = () => {
+    setIsSuccessfullySubmitted(false);
+    reset();
   };
-  let isEnabled = canBeSubmitted();
-  console.log("is enable :" + isEnabled);
-
-  let buttonText = statusState.status;
   return (
     <div className={`${Classes.Columns} ${Classes.ThreeFifth}`}>
-      <form onSubmit={onSubmitHandler} method="POST">
+      <form onSubmit={handleSubmit(onSubmit)} method="POST">
         <div className={Classes.Columns}>
           <h1>Contact us </h1>
         </div>
@@ -113,13 +42,16 @@ const Form = () => {
               First Name*
             </label>
             <div className={Classes.Control}>
-              <Textinput
-                type="text"
-                id="firstName"
-                value={firstNameState.firstName}
-                onChange={handleChange}
-                required
+              <input
+                className={Classes.Input}
+                name="fisrtName"
+                ref={register({ required: true })}
               />
+              {errors.fisrtName && (
+                <span className={Classes.Error}>
+                  Please Insert Your First Name
+                </span>
+              )}
             </div>
           </div>
           <div className={Classes.Column}>
@@ -127,12 +59,7 @@ const Form = () => {
               Last Name
             </label>
             <div className={Classes.Control}>
-              <Textinput
-                type="text"
-                id="lastName"
-                value={lastNameState.lastName}
-                onChange={handleChange}
-              />
+              <input className={Classes.Input} name="lastName" ref={register} />
             </div>
           </div>
         </div>
@@ -143,13 +70,20 @@ const Form = () => {
               Email*
             </label>
             <div className={Classes.Control}>
-              <Textinput
-                type="email"
-                id="email"
-                value={emailState.email}
-                onChange={handleChange}
-                required
+              <input
+                className={Classes.Input}
+                name="email"
+                ref={register({
+                  required: "Email is Requeird",
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i,
+                    message: "Invalid Email Address",
+                  },
+                })}
               />
+              {errors.email && (
+                <span className={Classes.Error}>{errors.email.message}</span>
+              )}
             </div>
           </div>
           <div className={Classes.Column}>
@@ -157,12 +91,7 @@ const Form = () => {
               Job title
             </label>
             <div className={Classes.Control}>
-              <Textinput
-                type="text"
-                id="jobTitle"
-                value={jobTitleState.jobTitle}
-                onChange={handleChange}
-              />
+              <input className={Classes.Input} name="jobTitle" ref={register} />
             </div>
           </div>
         </div>
@@ -173,13 +102,16 @@ const Form = () => {
               Companey*
             </label>
             <div className={Classes.Control}>
-              <Textinput
-                type="text"
-                id="companey"
-                value={companeyState.companey}
-                onChange={handleChange}
-                required
+              <input
+                className={Classes.Input}
+                name="companey"
+                ref={register({ required: true })}
               />
+              {errors.companey && (
+                <span className={Classes.Error}>
+                  Please Insert Your Companey Name
+                </span>
+              )}
             </div>
           </div>
           <div className={Classes.Column}>
@@ -189,10 +121,8 @@ const Form = () => {
             <div className={Classes.Control}>
               <select
                 name="industry"
-                id="industry"
-                value={industryState.industry}
-                onChange={handleChange}
                 className={Classes.DropDown}
+                ref={register}
               >
                 <option value="banking">Banking</option>
                 <option value="automative">Automative</option>
@@ -210,15 +140,14 @@ const Form = () => {
         <div className={Classes.Columns}>
           <div className={Classes.Column}>
             <label className={Classes.Label} htmlFor="country">
-              Country*
+              Country
             </label>
             <div className={Classes.Control}>
               <ReactFlagsSelect
                 selected={selected}
                 onSelect={(code) => setSelected(code)}
-                id="country"
+                name="country"
                 className={Classes.DropDown}
-                required
               />
             </div>
           </div>
@@ -229,10 +158,8 @@ const Form = () => {
             <div className={Classes.Control}>
               <select
                 name="operationGeo"
-                id="operationGeo"
-                value={operationGeoState.operationGeo}
-                onChange={handleChange}
                 className={Classes.DropDown}
+                ref={register}
               >
                 <option value="n/a">N/A</option>
                 <option value="national">National</option>
@@ -251,10 +178,9 @@ const Form = () => {
             </label>
             <div className={Classes.Control}>
               <textarea
-                id="message"
+                name="message"
                 className={Classes.Textarea}
-                value={messageState.message}
-                onChange={handleChange}
+                ref={register}
               />
             </div>
           </div>
@@ -265,8 +191,7 @@ const Form = () => {
               <label>
                 <input
                   type="checkbox"
-                  id="agree"
-                  onChange={handleChange}
+                  ref={register({ required: true })}
                   name="termsAccepted"
                 />
                 <span>
@@ -276,6 +201,11 @@ const Form = () => {
                   </a>
                   .
                 </span>
+                {errors.termsAccepted && (
+                  <span className={Classes.Error}>
+                    Please Accespt The Terms
+                  </span>
+                )}
               </label>
             </div>
             <div className={Classes.Checkbox}>
@@ -286,18 +216,21 @@ const Form = () => {
             </div>
           </div>
           <div className={Classes.Column}>
-            <button
-              className={Classes.Button}
-              disabled={!isEnabled}
-              type="submit"
-            >
-              {buttonText}
+            <button type="submit" className={Classes.Button}>
+              Submit
             </button>
           </div>
         </div>
+        {isSuccessfullySubmitted && (
+          <div
+            id="success"
+            className={Classes.Success}
+            onClick={backToContactUs}
+          >
+            <span>Thank you for your intrest, We will contact you shortly</span>
+          </div>
+        )}
       </form>
     </div>
   );
-};
-
-export default Form;
+}
