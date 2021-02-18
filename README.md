@@ -1,6 +1,4 @@
-# PLEASE ReadMe.pdf file
 
-the PDF file Added
 
 # Getting Started with Create React App
 
